@@ -1,4 +1,4 @@
-package edu.coderhouse.jpa.entity;
+package edu.coderhouse.jpa.entities;
 
 import jakarta.persistence.*;
 import lombok.Getter;

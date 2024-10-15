@@ -1,10 +1,10 @@
 package edu.coderhouse.jpa;
 
-import edu.coderhouse.jpa.entity.Client;
-import edu.coderhouse.jpa.entity.Invoice;
-import edu.coderhouse.jpa.entity.InvoiceDetail;
-import edu.coderhouse.jpa.entity.Product;
-import edu.coderhouse.jpa.service.DaoFactory;
+import edu.coderhouse.jpa.entities.Client;
+import edu.coderhouse.jpa.entities.Invoice;
+import edu.coderhouse.jpa.entities.InvoiceDetail;
+import edu.coderhouse.jpa.entities.Product;
+import edu.coderhouse.jpa.services.DaoFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;

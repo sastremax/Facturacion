@@ -1,8 +1,8 @@
-package edu.coderhouse.jpa.service;
+package edu.coderhouse.jpa.services;
 
-import edu.coderhouse.jpa.entity.Client;
-import edu.coderhouse.jpa.entity.Invoice;
-import edu.coderhouse.jpa.entity.Product;
+import edu.coderhouse.jpa.entities.Client;
+import edu.coderhouse.jpa.entities.Invoice;
+import edu.coderhouse.jpa.entities.Product;
 import jakarta.persistence.EntityManagerFactory;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
