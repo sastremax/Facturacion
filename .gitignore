@@ -37,3 +37,13 @@ mysql_data/
 
 # Ignorar todos los archivos con extensión .sdi
 *.sdi
+
+# Ignore files and folders
+/target/
+/out/
+*.class
+*.jar
+*.war
+*.html
+*.css
+*.js
