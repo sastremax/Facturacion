@@ -31,3 +31,9 @@ build/
 
 ### VS Code ###
 .vscode/
+
+# Ignorar la carpeta mysql_data y su contenido
+mysql_data/
+
+# Ignorar todos los archivos con extensión .sdi
+*.sdi
