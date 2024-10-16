@@ -24,11 +24,15 @@ public class ClientService {
     public List<Client> getClients() {
         return this.jdbc.query(
                 "SELECT id, name, lastname, docnumber FROM client",
-                (rs, rowNum) -> new Client(
-                        rs.getString("name"),
-                        rs.getString("lastname"),
-                        rs.getString("docnumber")
-                )
+                (rs, rowNum) -> {
+                    Client client = new Client(
+                            rs.getString("name"),
+                            rs.getString("lastname"),
+                            rs.getString("docnumber")
+                    );
+                    client.setId(rs.getInt("id"));
+                    return client;
+                }
         );
     }
 
