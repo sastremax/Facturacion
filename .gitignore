@@ -41,6 +41,7 @@ mysql_data/
 # Ignore files and folders
 /target/
 /out/
+/target/
 *.class
 *.jar
 *.war

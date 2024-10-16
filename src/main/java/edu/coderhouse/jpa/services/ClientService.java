@@ -32,4 +32,15 @@ public class ClientService {
         );
     }
 
+    public void updateClient(int id, Client client) {
+        this.jdbc.update(
+                "UPDATE client SET name = ?, lastname = ?, docnumber = ? WHERE id = ?",
+                client.getName(), client.getLastname(), client.getDocnumber(), id
+        );
+    }
+
+    public void deleteClient(int id) {
+        this.jdbc.update("DELETE FROM client WHERE id = ?", id);
+    }
+
 }

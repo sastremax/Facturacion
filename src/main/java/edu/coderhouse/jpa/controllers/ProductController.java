@@ -29,26 +29,31 @@ public class ProductController {
 
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Product> getById(@PathVariable Integer id) {
-        Optional<Product> product = service.getById(id);
-
-        if (product.isPresent()) {
-            // Si el producto existe, devolver 200 OK con el producto
-            return ResponseEntity.ok(product.get());
-        } else {
-            // Si el producto no existe, devolver 404 Not Found
+        try {
+            Product product = service.getProductById(id);
+            return ResponseEntity.ok(product);
+        } catch (RuntimeException e) {
             return ResponseEntity.notFound().build();
         }
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Product> create(@RequestBody Product product) {
-        try {
-            Product newProduct = service.save(product);
-            return ResponseEntity.ok(newProduct);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return ResponseEntity.internalServerError().build();
-        }
+        Product newProduct = service.save(product);
+        return ResponseEntity.ok(newProduct);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Product> updateProduct(@PathVariable int id, @RequestBody Product product) {
+        product.setId(id);
+        Product updatedProduct = service.save(product);
+        return ResponseEntity.ok(updatedProduct);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteProduct(@PathVariable int id) {
+        service.deleteProduct(id);
+        return ResponseEntity.noContent().build();
     }
 
 }
