@@ -11,14 +11,14 @@ import java.util.List;
 public class ClientService {
 
     @Autowired
-    private JdbcTemplate jdbc;
+    private final JdbcTemplate jdbc;
 
     public ClientService(JdbcTemplate jdbc) {
         this.jdbc = jdbc;
     }
 
     public void createClient(Client client) {
-        this.jdbc.update("INSERT INTO client (name, lastname, docnumber) VALUES (?, ?, ?)", client.getName(), client.getLastname(), client.getDocnumber());
+        this.jdbc.update("INSERT INTO client (name, lastname, docnumber) VALUES (?, ?, ?)", client.getName(), client.getLastName(), client.getDocNumber());
     }
 
     public List<Client> getClients() {
@@ -39,7 +39,7 @@ public class ClientService {
     public void updateClient(int id, Client client) {
         this.jdbc.update(
                 "UPDATE client SET name = ?, lastname = ?, docnumber = ? WHERE id = ?",
-                client.getName(), client.getLastname(), client.getDocnumber(), id
+                client.getName(), client.getLastName(), client.getDocNumber(), id
         );
     }
 
