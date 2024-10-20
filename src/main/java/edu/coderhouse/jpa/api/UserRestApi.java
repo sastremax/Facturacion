@@ -33,11 +33,11 @@ public class UserRestApi {
                     UserEntity.class,
                     params
             );
-            return new ResponseEntity<>(user, HttpStatus.OK);
+            return user;
         } catch (HttpClientErrorException.NotFound e) {
-            return new ResponseEntity<>("usuario no encontrado", HttpStatus.NOT_FOUND);
+            return null;
         } catch (Exception e) {
-            return new ResponseEntity<>("ocurrio un error", HttpStatus.INTERNAL_SERVER_ERROR);
+            throw new RuntimeException("existe un error al obtener el usuario", e);
         }
     }
 
