@@ -1,5 +1,7 @@
 package edu.coderhouse.jpa.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -10,7 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Table(name= "CLIENT")
+@Table(name= "client")
 @Getter
 @Setter
 @NoArgsConstructor
@@ -18,19 +20,26 @@ import java.util.List;
 public class Client {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    @Column(name = "id", nullable = false, updatable = false, length = 36)
+    @Schema(description = "Unique ID of the client", requiredMode = Schema.RequiredMode.AUTO, example = "0124529f-81b7-4924-952e-8d3fe108ab8f")
+    private String id;
 
-    @Column(name = "NAME")
+    @Column(name = "NAME", nullable = false)
+    @Schema(description = "First name of the client", requiredMode = Schema.RequiredMode.REQUIRED, example = "Maximiliano")
     private String name;
 
-    @Column(name = "LASTNAME")
+    @Column(name = "LASTNAME", nullable = false)
+    @Schema(description = "Last name of the client", requiredMode = Schema.RequiredMode.REQUIRED, example = "Sastre")
     private String lastName;
 
-    @Column(name = "DOCNUMBER")
+    @Column(name = "DOCNUMBER", nullable = false)
+    @Schema(description = "Document number of the client", requiredMode = Schema.RequiredMode.REQUIRED, example = "25145269")
     private String docNumber;
 
     @OneToMany(mappedBy = "client", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonIgnoreProperties("client")
+    @Schema(description = "List of invoices associated with the client")
     private List<Invoice> invoices;
 
     public Client(String name, String lastName, String docNumber) {

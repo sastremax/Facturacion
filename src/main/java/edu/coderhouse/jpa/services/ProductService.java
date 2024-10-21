@@ -1,55 +1,54 @@
 package edu.coderhouse.jpa.services;
 import edu.coderhouse.jpa.entities.Product;
 import edu.coderhouse.jpa.repositories.ProductRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 public class ProductService {
 
-    @Autowired
-    private ProductRepository repository;
-
-    public ProductService(ProductRepository repository) {
-        this.repository = repository;
-    }
+    private final ProductRepository productRepository;
 
     public Product save(Product product) {
         try {
-            return repository.save(product);
+            return productRepository.save(product);
         } catch (Exception e) {
-            throw new RuntimeException("Error al guardar el producto", e);
+            throw new RuntimeException("Error to save the product", e);
         }
     }
 
     public List<Product> getProducts() {
-        return repository.findAll();
+        return productRepository.findAll();
     }
 
-    public Optional<Product> getById(Integer id) {
-        return repository.findById(id);
-    }
-
-    public Product updateProduct(Integer id, Product newProduct) {
-        return repository.findById(id).map(product -> {
+    public Product updateProduct(String id, Product newProduct) {
+        return productRepository.findById(id).map(product -> {
             product.setDescription(newProduct.getDescription());
             product.setCodigo(newProduct.getCodigo());
             product.setStock(newProduct.getStock());
             product.setPrice(newProduct.getPrice());
-            return repository.save(product);
-        }).orElseThrow(() -> new RuntimeException("Producto no encontrado"));
+            return productRepository.save(product);
+        }).orElseThrow(() -> new RuntimeException("Product not found"));
     }
 
-    public void deleteProduct(Integer id) {
-        repository.deleteById(id);
+    public void deleteProduct(String id) {
+        if (productRepository.existsById(id)) {
+            productRepository.deleteById(id);
+        } else {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Product not found");
+        }
     }
 
-    public Product getProductById(Integer id) {
-        return repository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Producto no encontrado"));
+    public Product getProductById(String id) {
+        return productRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Product not found"));
     }
 
 }

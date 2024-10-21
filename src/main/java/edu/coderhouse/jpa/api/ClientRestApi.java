@@ -1,7 +1,6 @@
 package edu.coderhouse.jpa.api;
 
-import edu.coderhouse.jpa.entities.UserEntity;
-import org.springframework.http.HttpStatus;
+import edu.coderhouse.jpa.entities.Client;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
@@ -11,69 +10,69 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Service
-public class UserRestApi {
+public class ClientRestApi {
 
-    final String url = "https://jsonplaceholder.typicode.com/users";
+    final String url = "https://jsonplaceholder.typicode.com/clients";
 
-    public ResponseEntity<UserEntity[]> getUsers() {
+    public ResponseEntity<Client[]> getClients() {
         RestTemplate restTemplate = new RestTemplate();
         return restTemplate.getForEntity(
                 this.url,
-                UserEntity[].class
+                Client[].class
         );
     }
 
-    public UserEntity getUserById(int id) {
+    public Client getClientById(String id) {
         RestTemplate restTemplate = new RestTemplate();
         Map<String, String> params = new HashMap<>();
         params.put("id", String.valueOf(id));
         try {
-            UserEntity user = restTemplate.getForObject(
+            return restTemplate.getForObject(
                     this.url + "/{id}",
-                    UserEntity.class,
+                    Client.class,
                     params
             );
-            return user;
         } catch (HttpClientErrorException.NotFound e) {
             return null;
         } catch (Exception e) {
-            throw new RuntimeException("existe un error al obtener el usuario", e);
+            throw new RuntimeException("Error to obtein a client", e);
         }
     }
 
-    public UserEntity saveUser(UserEntity user) {
+    public Client saveClient(Client client) {
         RestTemplate restTemplate = new RestTemplate();
         return restTemplate.postForObject(
                 this.url,
-                user,
-                UserEntity.class
+                client,
+                Client.class
         );
     }
 
-    public UserEntity updateUser(int id, UserEntity user) {
+    public Client updateClient(String id, Client client) {
         RestTemplate restTemplate = new RestTemplate();
         Map<String, String> params = new HashMap<>();
         params.put("id", String.valueOf(id));
         restTemplate.put(
                 this.url + "/{id}",
-                user,
+                client,
                 params
         );
-        return user;
+        return client;
     }
 
-    public UserEntity deleteUser(int id) {
+    public Client deleteClient(String id) {
         RestTemplate restTemplate = new RestTemplate();
         Map<String, String> params = new HashMap<>();
         params.put("id", String.valueOf(id));
-        UserEntity user = restTemplate.getForObject(
+        Client client = restTemplate.getForObject(
                 this.url + "/{id}",
-                UserEntity.class,
+                Client.class,
                 params);
         restTemplate.delete(
                 this.url + "/{id}",
                 params
         );
-        return user;
+        return client;
     }
+
 }

@@ -1,9 +1,11 @@
 package edu.coderhouse.jpa.services;
 
 import edu.coderhouse.jpa.entities.Client;
+import edu.coderhouse.jpa.repositories.ClientRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
@@ -11,40 +13,36 @@ import java.util.List;
 public class ClientService {
 
     @Autowired
-    private final JdbcTemplate jdbc;
+    private ClientRepository clientRepository;
 
-    public ClientService(JdbcTemplate jdbc) {
-        this.jdbc = jdbc;
-    }
-
-    public void createClient(Client client) {
-        this.jdbc.update("INSERT INTO client (name, lastname, docnumber) VALUES (?, ?, ?)", client.getName(), client.getLastName(), client.getDocNumber());
+    public Client createClient(Client client) {
+        return clientRepository.save(client);
     }
 
     public List<Client> getClients() {
-        return this.jdbc.query(
-                "SELECT id, name, lastname, docnumber FROM client",
-                (rs, rowNum) -> {
-                    Client client = new Client(
-                            rs.getString("name"),
-                            rs.getString("lastname"),
-                            rs.getString("docnumber")
-                    );
-                    client.setId(rs.getInt("id"));
-                    return client;
-                }
-        );
+        return clientRepository.findAll();
     }
 
-    public void updateClient(int id, Client client) {
-        this.jdbc.update(
-                "UPDATE client SET name = ?, lastname = ?, docnumber = ? WHERE id = ?",
-                client.getName(), client.getLastName(), client.getDocNumber(), id
-        );
+    public void updateClient(String id, Client client) {
+        if (clientRepository.existsById(id)) {
+            client.setId(id);
+            clientRepository.save(client);
+        } else {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Client not found");
+        }
     }
 
-    public void deleteClient(int id) {
-        this.jdbc.update("DELETE FROM client WHERE id = ?", id);
+    public void deleteClient(String id) {
+        if (clientRepository.existsById(id)) {
+            clientRepository.deleteById(id);
+        } else {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Client not found");
+        }
+    }
+
+    public Client findClientByDocNumber(String docNumber) {
+        return clientRepository.findByDocNumber(docNumber)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Client not found"));
     }
 
 }

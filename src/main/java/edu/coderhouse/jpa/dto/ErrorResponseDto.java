@@ -1,4 +1,4 @@
-package edu.coderhouse.jpa.entities;
+package edu.coderhouse.jpa.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,9 +9,14 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserEntity {
-    private int id;
-    private String name;
-    private String username;
-    private String email;
+public class ErrorResponseDto {
+
+    String statusCode;
+
+    String status;
+
+    String msg;
+
+    String field;
+
 }

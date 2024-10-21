@@ -1,7 +1,11 @@
 package edu.coderhouse.jpa.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.List;
@@ -10,34 +14,35 @@ import java.util.List;
 @Table(name = "PRODUCT")
 @Getter
 @Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class Product {
 
-    public Product() {}
-
-    public Product(String description, String codigo, int stock, double price) {
-        this.description = description;
-        this.codigo = codigo;
-        this.stock = stock;
-        this.price = price;
-    }
-
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    @Column(name = "id")
+    @Schema(description = "Unique ID of the product", requiredMode = Schema.RequiredMode.AUTO, example = "99887766-81b7-4924-952e-8d3fe108ab8f")
+    private String id;
 
-    @Column(name = "DESCRIPTION")
+    @Column(name = "DESCRIPTION", nullable = false)
+    @Schema(description = "Description of the product", requiredMode = Schema.RequiredMode.REQUIRED, example = "resma A5")
     private String description;
 
-    @Column(name = "CODIGO")
+    @Column(name = "CODIGO", nullable = false)
+    @Schema(description = "Code of the product", requiredMode = Schema.RequiredMode.REQUIRED, example = "sdf4sd4ws3")
     private String codigo;
 
-    @Column(name = "STOCK")
+    @Column(name = "STOCK", nullable = false)
+    @Schema(description = "Stock available for this product", requiredMode = Schema.RequiredMode.REQUIRED, example = "1000")
     private int stock;
 
-    @Column(name = "PRICE")
+    @Column(name = "PRICE", nullable = false)
+    @Schema(description = "Price of the product", requiredMode = Schema.RequiredMode.REQUIRED, example = "750.40")
     private double price;
 
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonIgnoreProperties("product")
+    @Schema(description = "List of invoice details associated with this product")
     private List<InvoiceDetail> details;
 
 }
