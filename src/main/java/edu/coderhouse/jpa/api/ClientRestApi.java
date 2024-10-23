@@ -8,6 +8,7 @@ import org.springframework.web.client.RestTemplate;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 @Service
 public class ClientRestApi {
@@ -22,10 +23,10 @@ public class ClientRestApi {
         );
     }
 
-    public Client getClientById(String id) {
+    public Client getClientById(UUID id) {
         RestTemplate restTemplate = new RestTemplate();
-        Map<String, String> params = new HashMap<>();
-        params.put("id", String.valueOf(id));
+        Map<String, Object> params = new HashMap<>();
+        params.put("id", id.toString());
         try {
             return restTemplate.getForObject(
                     this.url + "/{id}",
@@ -48,10 +49,10 @@ public class ClientRestApi {
         );
     }
 
-    public Client updateClient(String id, Client client) {
+    public Client updateClient(UUID id, Client client) {
         RestTemplate restTemplate = new RestTemplate();
-        Map<String, String> params = new HashMap<>();
-        params.put("id", String.valueOf(id));
+        Map<String, Object> params = new HashMap<>();
+        params.put("id", id.toString());
         restTemplate.put(
                 this.url + "/{id}",
                 client,
@@ -60,10 +61,10 @@ public class ClientRestApi {
         return client;
     }
 
-    public Client deleteClient(String id) {
+    public Client deleteClient(UUID id) {
         RestTemplate restTemplate = new RestTemplate();
-        Map<String, String> params = new HashMap<>();
-        params.put("id", String.valueOf(id));
+        Map<String, Object> params = new HashMap<>();
+        params.put("id", id.toString());
         Client client = restTemplate.getForObject(
                 this.url + "/{id}",
                 Client.class,

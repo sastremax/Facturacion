@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.List;
+import java.util.UUID;
 
 @Entity
 @Table(name = "PRODUCT")
@@ -19,10 +20,9 @@ import java.util.List;
 public class Product {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "id")
     @Schema(description = "Unique ID of the product", requiredMode = Schema.RequiredMode.AUTO, example = "99887766-81b7-4924-952e-8d3fe108ab8f")
-    private String id;
+    private UUID id;
 
     @Column(name = "DESCRIPTION", nullable = false)
     @Schema(description = "Description of the product", requiredMode = Schema.RequiredMode.REQUIRED, example = "resma A5")

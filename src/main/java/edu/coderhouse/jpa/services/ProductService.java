@@ -9,6 +9,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -28,7 +29,7 @@ public class ProductService {
         return productRepository.findAll();
     }
 
-    public Product updateProduct(String id, Product newProduct) {
+    public Product updateProduct(UUID id, Product newProduct) {
         return productRepository.findById(id).map(product -> {
             product.setDescription(newProduct.getDescription());
             product.setCodigo(newProduct.getCodigo());
@@ -38,7 +39,7 @@ public class ProductService {
         }).orElseThrow(() -> new RuntimeException("Product not found"));
     }
 
-    public void deleteProduct(String id) {
+    public void deleteProduct(UUID id) {
         if (productRepository.existsById(id)) {
             productRepository.deleteById(id);
         } else {
@@ -46,7 +47,7 @@ public class ProductService {
         }
     }
 
-    public Product getProductById(String id) {
+    public Product getProductById(UUID id) {
         return productRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Product not found"));
     }

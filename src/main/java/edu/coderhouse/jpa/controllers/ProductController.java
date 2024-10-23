@@ -13,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/products")
@@ -47,7 +48,7 @@ public class ProductController {
             @ApiResponse(responseCode = "404", description = "Not founded product")
     })
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> getById(@PathVariable String id) {
+    public ResponseEntity<?> getById(@PathVariable UUID id) {
         try {
             Product product = service.getProductById(id);
             return ResponseEntity.ok(product);
@@ -80,7 +81,7 @@ public class ProductController {
             @ApiResponse(responseCode = "404", description = "Not founded product")
     })
     @PutMapping("/{id}")
-    public ResponseEntity<?> updateProduct(@PathVariable String id, @RequestBody Product product) {
+    public ResponseEntity<?> updateProduct(@PathVariable UUID id, @RequestBody Product product) {
         try {
             product.setId(id);
             Product updatedProduct = service.updateProduct(id, product);
@@ -97,7 +98,7 @@ public class ProductController {
             @ApiResponse(responseCode = "404", description = "Not founded product")
     })
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteProduct(@PathVariable String id) {
+    public ResponseEntity<?> deleteProduct(@PathVariable UUID id) {
         try {
             service.deleteProduct(id);
             return ResponseEntity.noContent().build();

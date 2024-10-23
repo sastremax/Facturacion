@@ -9,7 +9,9 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @Entity
 @Table(name = "INVOICE")
@@ -20,10 +22,9 @@ import java.util.List;
 public class Invoice {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "id")
     @Schema(description = "Unique ID of the invoice", requiredMode = Schema.RequiredMode.AUTO, example = "0124529f-81b7-4924-952e-8d3fe108ab8f")
-    private String id;
+    private UUID id;
 
     @ManyToOne
     @JoinColumn(name = "client_id", nullable = false)
@@ -43,5 +44,13 @@ public class Invoice {
     @JsonIgnoreProperties("invoice")
     @Schema(description = "List of details associated with the invoice")
     private List<InvoiceDetail> details;
+
+    public Invoice(Client client, LocalDateTime createdAt, double total) {
+        this.id = UUID.randomUUID();
+        this.client = client;
+        this.createdAt = createdAt;
+        this.total = total;
+        this.details = new ArrayList<>();
+    }
 
 }

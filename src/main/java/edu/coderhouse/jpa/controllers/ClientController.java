@@ -14,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("api/clients")
@@ -55,7 +56,7 @@ public class ClientController {
                     content = { @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponseDto.class)) }
             )})
     @PutMapping("/{id}")
-    public ResponseEntity<?> updateClient(@PathVariable String id, @RequestBody Client client) {
+    public ResponseEntity<?> updateClient(@PathVariable UUID id, @RequestBody Client client) {
         try {
             service.updateClient(id, client);
             return ResponseEntity.ok().build();
@@ -72,7 +73,7 @@ public class ClientController {
                     content = { @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponseDto.class)) }
             )})
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteClient(@PathVariable String id) {
+    public ResponseEntity<?> deleteClient(@PathVariable UUID id) {
         try {
             service.deleteClient(id);
             return ResponseEntity.noContent().build();

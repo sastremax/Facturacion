@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
+import java.util.UUID;
 
 @Service
 public class ClientService {
@@ -23,7 +24,7 @@ public class ClientService {
         return clientRepository.findAll();
     }
 
-    public void updateClient(String id, Client client) {
+    public void updateClient(UUID id, Client client) {
         if (clientRepository.existsById(id)) {
             client.setId(id);
             clientRepository.save(client);
@@ -32,7 +33,7 @@ public class ClientService {
         }
     }
 
-    public void deleteClient(String id) {
+    public void deleteClient(UUID id) {
         if (clientRepository.existsById(id)) {
             clientRepository.deleteById(id);
         } else {
