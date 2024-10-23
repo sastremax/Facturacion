@@ -32,14 +32,9 @@ public class ProductController {
             @ApiResponse(responseCode = "404", description = "Not founded products")
     })
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> getAll() {
-        try {
-            List<Product> products = service.getProducts();
-            return ResponseEntity.ok(products);
-        } catch (RuntimeException e) {
-            ErrorResponseDto errorResponse = new ErrorResponseDto("404", "Not Found", "No se encontraron productos", "products");
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
-        }
+    public ResponseEntity<List<Product>> getAll() {
+        List<Product> products = service.getProducts();
+        return ResponseEntity.ok(products);
     }
 
     @Operation(summary = "Obtener un producto por ID", description = "Obtiene un producto específico mediante su ID")

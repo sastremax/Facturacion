@@ -1,14 +1,14 @@
 package edu.coderhouse.jpa.services;
 import edu.coderhouse.jpa.entities.Product;
 import edu.coderhouse.jpa.repositories.ProductRepository;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -17,9 +17,11 @@ public class ProductService {
 
     private final ProductRepository productRepository;
 
-    public Product save(Product product) {
+    public Product save(@Valid Product product) {
         try {
             return productRepository.save(product);
+        } catch (DataIntegrityViolationException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Product data is not valid", e);
         } catch (Exception e) {
             throw new RuntimeException("Error to save the product", e);
         }

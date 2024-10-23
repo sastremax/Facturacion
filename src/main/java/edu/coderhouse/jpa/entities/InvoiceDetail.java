@@ -24,7 +24,8 @@ public class InvoiceDetail {
     }
 
     @Id
-    @Column(name = "id")
+    @GeneratedValue(strategy = GenerationType.UUID)
+    @Column(name = "id", nullable = false)
     @Schema(description = "Unique ID of the invoice detail", requiredMode = Schema.RequiredMode.AUTO, example = "11223344-81b7-4924-952e-8d3fe108ab8f")
     private UUID id;
 

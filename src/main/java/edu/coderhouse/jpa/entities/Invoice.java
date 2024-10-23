@@ -22,7 +22,8 @@ import java.util.UUID;
 public class Invoice {
 
     @Id
-    @Column(name = "id")
+    @GeneratedValue(strategy = GenerationType.UUID)
+    @Column(name = "id", nullable = false)
     @Schema(description = "Unique ID of the invoice", requiredMode = Schema.RequiredMode.AUTO, example = "0124529f-81b7-4924-952e-8d3fe108ab8f")
     private UUID id;
 
@@ -43,10 +44,9 @@ public class Invoice {
     @OneToMany(mappedBy = "invoice", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JsonIgnoreProperties("invoice")
     @Schema(description = "List of details associated with the invoice")
-    private List<InvoiceDetail> details;
+    private List<InvoiceDetail> details = new ArrayList<>();
 
     public Invoice(Client client, LocalDateTime createdAt, double total) {
-        this.id = UUID.randomUUID();
         this.client = client;
         this.createdAt = createdAt;
         this.total = total;

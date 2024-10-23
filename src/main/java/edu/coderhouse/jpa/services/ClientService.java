@@ -25,12 +25,12 @@ public class ClientService {
     }
 
     public void updateClient(UUID id, Client client) {
-        if (clientRepository.existsById(id)) {
-            client.setId(id);
-            clientRepository.save(client);
-        } else {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Client not found");
-        }
+        Client existingClient = clientRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Client not found"));
+        existingClient.setName(client.getName());
+        existingClient.setLastName(client.getLastName());
+        existingClient.setDocNumber(client.getDocNumber());
+        clientRepository.save(existingClient);
     }
 
     public void deleteClient(UUID id) {

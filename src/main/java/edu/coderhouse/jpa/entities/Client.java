@@ -21,6 +21,7 @@ import java.util.UUID;
 public class Client {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "id", nullable = false, updatable = false, length = 36)
     @Schema(description = "Unique ID of the client", requiredMode = Schema.RequiredMode.AUTO, example = "0124529f-81b7-4924-952e-8d3fe108ab8f")
     private UUID id;
@@ -43,7 +44,6 @@ public class Client {
     private List<Invoice> invoices;
 
     public Client(String name, String lastName, String docNumber) {
-        this.id = UUID.randomUUID();
         this.name = name;
         this.lastName = lastName;
         this.docNumber = docNumber;

@@ -69,10 +69,14 @@ public class ClientRestApi {
                 this.url + "/{id}",
                 Client.class,
                 params);
-        restTemplate.delete(
-                this.url + "/{id}",
-                params
-        );
+        if (client != null) {
+            restTemplate.delete(
+                    this.url + "/{id}",
+                    params
+            );
+        } else {
+            throw new RuntimeException("Client not found for deletion");
+        }
         return client;
     }
 

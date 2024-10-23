@@ -15,17 +15,17 @@ public class ErrorResponseDto {
 
     @NotBlank
     @Schema(description = "Código de estado HTTP", example = "404")
-    String statusCode;
+    private String statusCode;
 
     @NotBlank
     @Schema(description = "Estado de la respuesta", example = "Not Found")
-    String status;
+    private String status;
 
     @NotBlank
     @Schema(description = "Mensaje de error detallado", example = "Cliente no encontrado")
-    String msg;
+    private String message;
 
     @Schema(description = "Campo relacionado al error", example = "id")
-    String field;
+    private String field;
 
 }

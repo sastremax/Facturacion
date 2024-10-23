@@ -20,6 +20,7 @@ import java.util.UUID;
 public class Product {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "id")
     @Schema(description = "Unique ID of the product", requiredMode = Schema.RequiredMode.AUTO, example = "99887766-81b7-4924-952e-8d3fe108ab8f")
     private UUID id;
