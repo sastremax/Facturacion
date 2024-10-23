@@ -46,4 +46,16 @@ public class Product {
     @Schema(description = "List of invoice details associated with this product")
     private List<InvoiceDetail> details;
 
+    public void increaseStock(int quantity) {
+        this.stock += quantity;
+    }
+
+    public void decreaseStock(int quantity) {
+        this.stock -= quantity;
+    }
+
+    public boolean isInStock(int quantity) {
+        return this.stock >= quantity;
+    }
+
 }

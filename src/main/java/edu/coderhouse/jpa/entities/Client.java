@@ -41,13 +41,16 @@ public class Client {
     @OneToMany(mappedBy = "client", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JsonIgnoreProperties("client")
     @Schema(description = "List of invoices associated with the client")
-    private List<Invoice> invoices;
+    private List<Invoice> invoices= new ArrayList<>();
+
+    public UUID getClientId() {
+        return id;
+    }
 
     public Client(String name, String lastName, String docNumber) {
         this.name = name;
         this.lastName = lastName;
         this.docNumber = docNumber;
-        this.invoices = new ArrayList<>();
     }
 
 }

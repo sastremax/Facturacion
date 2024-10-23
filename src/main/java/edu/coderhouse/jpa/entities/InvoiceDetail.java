@@ -50,4 +50,8 @@ public class InvoiceDetail {
     @Schema(description = "Product associated with this detail", requiredMode = Schema.RequiredMode.REQUIRED)
     private Product product;
 
+    public double getTotal() {
+        return amount * price;
+    }
+
 }

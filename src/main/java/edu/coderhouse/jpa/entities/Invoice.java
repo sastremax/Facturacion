@@ -46,6 +46,10 @@ public class Invoice {
     @Schema(description = "List of details associated with the invoice")
     private List<InvoiceDetail> details = new ArrayList<>();
 
+    public UUID getClientId() {
+        return client.getId();
+    }
+
     public Invoice(Client client, LocalDateTime createdAt, double total) {
         this.client = client;
         this.createdAt = createdAt;
