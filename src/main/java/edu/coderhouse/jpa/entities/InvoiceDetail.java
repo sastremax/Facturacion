@@ -16,13 +16,6 @@ import java.util.UUID;
 @NoArgsConstructor
 public class InvoiceDetail {
 
-    public InvoiceDetail(Invoice invoice, Product product, int amount, double price) {
-        this.invoice = invoice;
-        this.product = product;
-        this.amount = amount;
-        this.price = price;
-    }
-
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "id", nullable = false)

@@ -23,7 +23,7 @@ public class Client {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "id", nullable = false, updatable = false, length = 36)
-    @Schema(description = "Unique ID of the client", requiredMode = Schema.RequiredMode.AUTO, example = "0124529f-81b7-4924-952e-8d3fe108ab8f")
+    @Schema(description = "Unique ID of the client", accessMode = Schema.AccessMode.READ_ONLY, example = "0124529f-81b7-4924-952e-8d3fe108ab8f")
     private UUID id;
 
     @Column(name = "NAME", nullable = false)
@@ -42,10 +42,6 @@ public class Client {
     @JsonIgnoreProperties("client")
     @Schema(description = "List of invoices associated with the client")
     private List<Invoice> invoices= new ArrayList<>();
-
-    public UUID getClientId() {
-        return id;
-    }
 
     public Client(String name, String lastName, String docNumber) {
         this.name = name;

@@ -1,5 +1,6 @@
 package edu.coderhouse.jpa.services;
 
+import edu.coderhouse.jpa.dto.TimeApiResponse;
 import edu.coderhouse.jpa.entities.Client;
 import edu.coderhouse.jpa.entities.Invoice;
 import edu.coderhouse.jpa.entities.InvoiceDetail;
@@ -10,8 +11,10 @@ import edu.coderhouse.jpa.repositories.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 @Service
@@ -28,6 +31,12 @@ public class InvoiceService {
 
     public Invoice createInvoice(Invoice invoice) {
         validateInvoice(invoice);
+
+        double total = calculateTotal(invoice);
+        invoice.setTotal(total);
+
+        invoice.setCreatedAt(getCurrentDate());
+
         return invoiceRepository.save(invoice);
     }
 
@@ -49,6 +58,25 @@ public class InvoiceService {
 
             product.get().setStock(product.get().getStock() - detail.getAmount());
             productRepository.save(product.get());
+        }
+    }
+
+    private double calculateTotal(Invoice invoice) {
+        double total = 0;
+        for (InvoiceDetail detail : invoice.getDetails()) {
+            total += detail.getAmount() * detail.getProduct().getPrice();
+        }
+        return total;
+    }
+
+    private LocalDateTime getCurrentDate() {
+        RestTemplate restTemplate = new RestTemplate();
+        try {
+            String url = "http://worldclockapi.com/api/json/utc/now";
+            TimeApiResponse response = restTemplate.getForObject(url, TimeApiResponse.class);
+            return LocalDateTime.parse(response.getCurrentDateTime());
+        } catch (Exception e) {
+            return LocalDateTime.now();
         }
     }
 
