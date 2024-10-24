@@ -26,7 +26,7 @@ public class ClientService {
 
     public void updateClient(UUID id, Client client) {
         Client existingClient = clientRepository.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Client not found"));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "El cliente con el ID proporcionado no fue encontrado"));
         existingClient.setName(client.getName());
         existingClient.setLastName(client.getLastName());
         existingClient.setDocNumber(client.getDocNumber());
@@ -39,6 +39,11 @@ public class ClientService {
         } else {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Client not found");
         }
+    }
+
+    public Client getClientById(UUID id) {
+        return clientRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Cliente no encontrado"));
     }
 
     public Client findClientByDocNumber(String docNumber) {

@@ -37,6 +37,30 @@ public class ClientController {
         return ResponseEntity.ok(this.service.getClients());
     }
 
+    @Operation(summary = "Obtener un cliente por ID", description = "Obtiene los datos de un cliente específico usando su ID")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Cliente encontrado"),
+            @ApiResponse(responseCode = "404", description = "Cliente no encontrado",
+                    content = { @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponseDto.class)) }
+            )})
+    @GetMapping("/{id}")
+    public ResponseEntity<Client> getClientById(@PathVariable UUID id) {
+        Client client = service.getClientById(id);
+        return ResponseEntity.ok(client);
+    }
+
+    @Operation(summary = "Buscar cliente por número de documento", description = "Obtiene los datos de un cliente utilizando su número de documento")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Cliente encontrado"),
+            @ApiResponse(responseCode = "404", description = "Cliente no encontrado",
+                    content = { @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponseDto.class)) }
+            )})
+    @GetMapping("/doc/{docNumber}")
+    public ResponseEntity<Client> getClientByDocNumber(@PathVariable String docNumber) {
+        Client client = service.findClientByDocNumber(docNumber);
+        return ResponseEntity.ok(client);
+    }
+
     @Operation(summary = "Crear un nuevo cliente")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Succesful operation"),
