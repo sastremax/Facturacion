@@ -72,7 +72,7 @@ public class ClientController {
         return ResponseEntity.ok(savedClient);
     }
 
-    @Operation(summary = "Actualizar un cliente existente", description = "Actualiza los datos de un cliente existente")
+    @Operation(summary = "Actualizar un cliente existente por ID", description = "Actualiza los datos de un cliente existente")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Succesful update Client"),
             @ApiResponse(responseCode = "404", description = "Client no found",
