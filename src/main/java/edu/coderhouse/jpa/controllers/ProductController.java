@@ -44,7 +44,6 @@ public class ProductController {
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> getById(@PathVariable String id) {
         try {
-            System.out.println("ID received: " + id);
             Product product = service.getProductById(id);
             return ResponseEntity.ok(product);
         } catch (RuntimeException e) {

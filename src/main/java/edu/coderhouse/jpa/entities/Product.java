@@ -21,7 +21,7 @@ public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "id", nullable = false, updatable = false, length = 36)
-    @Schema(description = "Unique ID of the product", requiredMode = Schema.RequiredMode.AUTO, example = "99887766-81b7-4924-952e-8d3fe108ab8f")
+    @Schema(description = "Unique ID of the product", accessMode = Schema.AccessMode.READ_ONLY, example = "99887766-81b7-4924-952e-8d3fe108ab8f")
     private String id;
 
     @Column(name = "DESCRIPTION", nullable = false)
@@ -42,7 +42,7 @@ public class Product {
 
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JsonIgnoreProperties("product")
-    @Schema(description = "List of invoice details associated with this product")
+    @Schema(description = "List of invoice details associated with this product", example = "null")
     private List<InvoiceDetail> details;
 
     public void increaseStock(int quantity) {
