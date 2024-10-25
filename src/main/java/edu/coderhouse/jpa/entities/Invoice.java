@@ -11,7 +11,6 @@ import lombok.Setter;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 @Entity
 @Table(name = "INVOICE")
@@ -25,7 +24,7 @@ public class Invoice {
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "id", nullable = false, updatable = false, length = 36)
     @Schema(description = "Unique ID of the invoice", accessMode = Schema.AccessMode.READ_ONLY, example = "0124529f-81b7-4924-952e-8d3fe108ab8f")
-    private UUID id;
+    private String id;
 
     @ManyToOne
     @JoinColumn(name = "client_id", nullable = false)

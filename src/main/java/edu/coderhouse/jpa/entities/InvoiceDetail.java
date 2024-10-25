@@ -7,8 +7,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.UUID;
-
 @Entity
 @Table(name = "INVOICE_DETAILS")
 @Getter
@@ -18,9 +16,9 @@ public class InvoiceDetail {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    @Column(name = "id", nullable = false)
+    @Column(name = "id", nullable = false, updatable = false, length = 36)
     @Schema(description = "Unique ID of the invoice detail", requiredMode = Schema.RequiredMode.AUTO, example = "11223344-81b7-4924-952e-8d3fe108ab8f")
-    private UUID id;
+    private String id;
 
 
     @Column(name = "AMOUNT", nullable = false)

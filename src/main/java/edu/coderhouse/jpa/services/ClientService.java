@@ -8,7 +8,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
-import java.util.UUID;
 
 @Service
 public class ClientService {
@@ -24,7 +23,7 @@ public class ClientService {
         return clientRepository.findAll();
     }
 
-    public void updateClient(UUID id, Client client) {
+    public void updateClient(String id, Client client) {
         Client existingClient = clientRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "El cliente con el ID proporcionado no fue encontrado"));
         existingClient.setName(client.getName());
@@ -33,7 +32,7 @@ public class ClientService {
         clientRepository.save(existingClient);
     }
 
-    public void deleteClient(UUID id) {
+    public void deleteClient(String id) {
         if (clientRepository.existsById(id)) {
             clientRepository.deleteById(id);
         } else {
@@ -41,7 +40,7 @@ public class ClientService {
         }
     }
 
-    public Client getClientById(UUID id) {
+    public Client getClientById(String id) {
         return clientRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Cliente no encontrado"));
     }

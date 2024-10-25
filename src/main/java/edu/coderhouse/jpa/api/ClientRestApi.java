@@ -8,7 +8,6 @@ import org.springframework.web.client.RestTemplate;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;
 
 @Service
 public class ClientRestApi {
@@ -23,7 +22,7 @@ public class ClientRestApi {
         );
     }
 
-    public Client getClientById(UUID id) {
+    public Client getClientById(String id) {
         RestTemplate restTemplate = new RestTemplate();
         Map<String, Object> params = new HashMap<>();
         params.put("id", id.toString());
@@ -49,7 +48,7 @@ public class ClientRestApi {
         );
     }
 
-    public Client updateClient(UUID id, Client client) {
+    public Client updateClient(String id, Client client) {
         RestTemplate restTemplate = new RestTemplate();
         Map<String, Object> params = new HashMap<>();
         params.put("id", id.toString());
@@ -61,7 +60,7 @@ public class ClientRestApi {
         return client;
     }
 
-    public Client deleteClient(UUID id) {
+    public Client deleteClient(String id) {
         RestTemplate restTemplate = new RestTemplate();
         Map<String, Object> params = new HashMap<>();
         params.put("id", id.toString());

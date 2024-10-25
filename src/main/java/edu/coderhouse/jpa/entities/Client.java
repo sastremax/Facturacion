@@ -10,7 +10,6 @@ import lombok.Setter;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 @Entity
 @Table(name= "client")
@@ -24,7 +23,7 @@ public class Client {
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "id", nullable = false, updatable = false, length = 36)
     @Schema(description = "Unique ID of the client", accessMode = Schema.AccessMode.READ_ONLY, example = "0124529f-81b7-4924-952e-8d3fe108ab8f")
-    private UUID id;
+    private String id;
 
     @Column(name = "NAME", nullable = false)
     @Schema(description = "First name of the client", requiredMode = Schema.RequiredMode.REQUIRED, example = "Maximiliano")
