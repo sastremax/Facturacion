@@ -5,6 +5,7 @@ import edu.coderhouse.jpa.entities.Client;
 import edu.coderhouse.jpa.entities.Invoice;
 import edu.coderhouse.jpa.entities.InvoiceDetail;
 import edu.coderhouse.jpa.entities.Product;
+import edu.coderhouse.jpa.exceptions.InsufficientStockException;
 import edu.coderhouse.jpa.repositories.InvoiceRepository;
 import edu.coderhouse.jpa.repositories.ClientRepository;
 import edu.coderhouse.jpa.repositories.ProductRepository;
@@ -29,13 +30,17 @@ public class InvoiceService {
     @Autowired
     private ProductRepository productRepository;
 
-    public Invoice createInvoice(Invoice invoice) {
-        validateInvoice(invoice);
+    public Invoice createInvoice(Invoice invoice) throws InsufficientStockException {
+        for (InvoiceDetail detail : invoice.getDetails()) {
+            Product product = detail.getProduct();
+            int requestedQuantity = detail.getAmount();
 
-        double total = calculateTotal(invoice);
-        invoice.setTotal(total);
+            if (product.getStock() < requestedQuantity) {
+                throw new InsufficientStockException("No hay suficiente stock para el producto: " + product.getCodigo());
+            }
 
-        invoice.setCreatedAt(getCurrentDate());
+            product.decreaseStock(requestedQuantity);
+        }
 
         return invoiceRepository.save(invoice);
     }

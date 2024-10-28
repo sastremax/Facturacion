@@ -28,4 +28,15 @@ public class ErrorResponseDto {
     @Schema(description = "Campo relacionado al error", example = "id")
     private String field;
 
+    public ErrorResponseDto(String statusCode, String status, String message) {
+        this.statusCode = statusCode;
+        this.status = status;
+        this.message = message;
+        this.field = null;
+    }
+
+    public ErrorResponseDto(String message) {
+        this.message = message;
+    }
+
 }
