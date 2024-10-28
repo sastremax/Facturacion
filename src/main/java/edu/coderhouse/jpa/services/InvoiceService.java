@@ -16,6 +16,7 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -44,6 +45,7 @@ public class InvoiceService {
     }
 
     private void validateInvoice(Invoice invoice) {
+
         Optional<Client> client = clientRepository.findById(invoice.getClient().getId());
         if (client.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Cliente no existe");
@@ -80,6 +82,37 @@ public class InvoiceService {
             return LocalDateTime.parse(response.getCurrentDateTime());
         } catch (Exception e) {
             return LocalDateTime.now();
+        }
+    }
+
+    public List<Invoice> getAllInvoices() {
+        return invoiceRepository.findAll();
+    }
+
+    public Invoice getInvoiceById(String id) {
+        return invoiceRepository.findById(id).orElse(null);
+    }
+
+    public Invoice updateInvoice(String id, Invoice invoiceDetails) {
+        Optional<Invoice> invoiceOptional = invoiceRepository.findById(id);
+        if (invoiceOptional.isPresent()) {
+            Invoice invoice = invoiceOptional.get();
+            invoice.setDetails(invoiceDetails.getDetails());
+            invoice.setClient(invoiceDetails.getClient());
+            invoice.setTotal(calculateTotal(invoice));
+            return invoiceRepository.save(invoice);
+        } else {
+            return null;
+        }
+    }
+
+    public boolean deleteInvoice(String id) {
+        Optional<Invoice> invoiceOptional = invoiceRepository.findById(id);
+        if (invoiceOptional.isPresent()) {
+            invoiceRepository.deleteById(id);
+            return true;
+        } else {
+            return false;
         }
     }
 

@@ -34,7 +34,6 @@ public class InvoiceController {
             @ApiResponse(responseCode = "500", description = "Error interno del servidor",
                     content = { @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponseDto.class)) })
     })
-
     @PostMapping(consumes = "application/json")
     public ResponseEntity<?> createInvoice(@RequestBody Invoice invoice) {
         try {
@@ -67,6 +66,7 @@ public class InvoiceController {
             @ApiResponse(responseCode = "404", description = "No se encontraron las facturas",
                 content = { @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponseDto.class)) })
     })
+    @GetMapping
     public ResponseEntity<?> getAllInvoices() {
         List<Invoice> invoices = invoiceService.getAllInvoices();
         if (invoices.isEmpty()) {

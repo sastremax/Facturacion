@@ -38,7 +38,8 @@ public class InvoiceDetail {
     @ManyToOne
     @JoinColumn(name = "product_id", nullable = false)
     @JsonIgnoreProperties("details")
-    @Schema(description = "Product associated with this detail", requiredMode = Schema.RequiredMode.REQUIRED)
+    @Schema(description = "Product associated with this detail", requiredMode = Schema.RequiredMode.REQUIRED,
+            example = "{ \"id\": \"234e4567-e89b-12d3-a456-426614174111\", \"description\": \"resma A5\", \"price\": 750.25 }")
     private Product product;
 
     public double getTotal() {
