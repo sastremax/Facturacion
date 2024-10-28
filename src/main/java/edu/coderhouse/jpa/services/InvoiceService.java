@@ -31,16 +31,14 @@ public class InvoiceService {
     private ProductRepository productRepository;
 
     public Invoice createInvoice(Invoice invoice) throws InsufficientStockException {
-        for (InvoiceDetail detail : invoice.getDetails()) {
-            Product product = detail.getProduct();
-            int requestedQuantity = detail.getAmount();
 
-            if (product.getStock() < requestedQuantity) {
-                throw new InsufficientStockException("No hay suficiente stock para el producto: " + product.getCodigo());
-            }
+        validateInvoice(invoice);
 
-            product.decreaseStock(requestedQuantity);
-        }
+        LocalDateTime currentDate = getCurrentDate();
+        invoice.setCreatedAt(currentDate);
+
+        double total = calculateTotal(invoice);
+        invoice.setTotal(total);
 
         return invoiceRepository.save(invoice);
     }
