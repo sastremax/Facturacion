@@ -41,7 +41,7 @@ public class Invoice {
     @Schema(description = "Total amount of the invoice", accessMode = Schema.AccessMode.READ_ONLY, example = "158754.10")
     private double total;
 
-    @OneToMany(mappedBy = "invoice", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "invoice", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JsonIgnoreProperties("invoice")
     @Schema(description = "List of details associated with the invoice", requiredMode = Schema.RequiredMode.REQUIRED,
             example = "[ { \"product\": { \"id\": \"234e4567-e89b-12d3-a456-426614174111\", \"description\": \"resma A5\", \"price\": 750.25 }, \"amount\": 2 }]")

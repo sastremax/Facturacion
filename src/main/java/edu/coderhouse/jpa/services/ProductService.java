@@ -32,6 +32,7 @@ public class ProductService {
 
     public Product updateProduct(String id, Product newProduct) {
         return productRepository.findById(id).map(product -> {
+            System.out.println("Actualizando producto con ID: " + product.getId() + " con nuevo precio: " + newProduct.getPrice());
             product.setDescription(newProduct.getDescription());
             product.setCodigo(newProduct.getCodigo());
             product.setStock(newProduct.getStock());
