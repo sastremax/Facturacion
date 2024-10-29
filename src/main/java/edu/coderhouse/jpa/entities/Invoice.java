@@ -43,8 +43,7 @@ public class Invoice {
 
     @OneToMany(mappedBy = "invoice", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JsonIgnoreProperties("invoice")
-    @Schema(description = "List of details associated with the invoice", requiredMode = Schema.RequiredMode.REQUIRED,
-            example = "[ { \"product\": { \"id\": \"234e4567-e89b-12d3-a456-426614174111\", \"description\": \"resma A5\", \"price\": 750.25 }, \"amount\": 2 }]")
+    @Schema(description = "List of details associated with the invoice", requiredMode = Schema.RequiredMode.REQUIRED)
     private List<InvoiceDetail> details = new ArrayList<>();
 
     public Invoice(Client client, List<InvoiceDetail> details) {

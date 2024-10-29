@@ -62,14 +62,40 @@ public class ClientController {
 
     @Operation(summary = "Crear un nuevo cliente")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Succesful operation"),
-            @ApiResponse(responseCode = "400", description = "invalid parameters",
-                content = { @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponseDto.class)) }
-            )})
+            @ApiResponse(responseCode = "201", description = "Cliente creado exitosamente"),
+            @ApiResponse(responseCode = "400", description = "Solicitud inválida (datos incompletos o incorrectos)",
+                content = { @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponseDto.class)) }),
+            @ApiResponse(responseCode = "500", description = "Error interno del servidor",
+                    content = { @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponseDto.class)) })
+            })
     @PostMapping(consumes = "application/json")
-    public ResponseEntity<Client> createClient(@RequestBody Client client) {
-        Client savedClient = this.service.createClient(client);
-        return ResponseEntity.ok(savedClient);
+    public ResponseEntity<?> createClient(
+            @RequestBody
+            @io.swagger.v3.oas.annotations.media.Schema(example = "{\n" +
+                    "  \"id\": \"49d7fb2e-1435-41a2-8cc2-020bfeeb4151\",\n" +
+                    "  \"name\": \"John Doe\",\n" +
+                    "  \"email\": \"johndoe@example.com\",\n" +
+                    "  \"docNumber\": \"12345678\"\n" +
+                    "}")
+            Client client) {
+        try {
+            Client savedClient = this.service.createClient(client);
+            return ResponseEntity.status(HttpStatus.CREATED).body(savedClient);
+        } catch (IllegalArgumentException e) {
+            ErrorResponseDto errorResponse = new ErrorResponseDto(
+                    String.valueOf(HttpStatus.BAD_REQUEST.value()),
+                    HttpStatus.BAD_REQUEST.getReasonPhrase(),
+                    "Parámetros inválidos",
+                    "client");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
+        } catch (Exception e) {
+            ErrorResponseDto errorResponse = new ErrorResponseDto(
+                    String.valueOf(HttpStatus.INTERNAL_SERVER_ERROR.value()),
+                    HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase(),
+                    "Error inesperado del servidor",
+                    "internal_error");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
+        }
     }
 
     @Operation(summary = "Actualizar un cliente existente por ID", description = "Actualiza los datos de un cliente existente")

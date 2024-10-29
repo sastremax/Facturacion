@@ -44,8 +44,24 @@ public class InvoiceController {
                     content = { @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponseDto.class)) })
     })
     @PostMapping(consumes = "application/json")
-    public ResponseEntity<?> createInvoice(@RequestBody Invoice invoice) {
-        log.info("Iniciando la creación de factura para el cliente con ID: {}", invoice.getClient() != null ? invoice.getClient().getId() : "Cliente no proporcionado");
+    public ResponseEntity<?> createInvoice(
+            @RequestBody
+            @io.swagger.v3.oas.annotations.media.Schema(example = "{\n" +
+                    "  \"client\": {\n" +
+                    "    \"id\": \"49d7fb2e-1435-41a2-8cc2-020bfeeb4151\"\n" +
+                    "  },\n" +
+                    "  \"details\": [\n" +
+                    "    {\n" +
+                    "      \"id\": \"9a26f035-6eb5-4bbd-af5e-d0d8d7854fda\",\n" +
+                    "      \"product\": {\n" +
+                    "        \"id\": \"0cccbc88-0793-42f0-b76f-ee7bdeedcedd\"\n" +
+                    "      },\n" +
+                    "      \"amount\": 4,\n" +
+                    "      \"price\": 750.4\n" +
+                    "    }\n" +
+                    "  ]\n" +
+                    "}")
+            Invoice invoice) {
 
         if (invoice.getClient() == null) {
             log.error("Error: El cliente no fue proporcionado en la factura");
