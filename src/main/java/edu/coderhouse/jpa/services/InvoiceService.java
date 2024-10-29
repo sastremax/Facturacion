@@ -56,6 +56,7 @@ public class InvoiceService {
         if (client.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Cliente no existe");
         }
+        invoice.setClient(client.get());
 
         for (InvoiceDetail detail : invoice.getDetails()) {
             Optional<Product> product = productRepository.findById(detail.getProduct().getId());
@@ -67,6 +68,7 @@ public class InvoiceService {
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Cantidad mayor al stock disponible");
             }
 
+            detail.setProduct(product.get());
             product.get().setStock(product.get().getStock() - detail.getAmount());
             productRepository.save(product.get());
         }
@@ -75,7 +77,11 @@ public class InvoiceService {
     private double calculateTotal(Invoice invoice) {
         double total = 0;
         for (InvoiceDetail detail : invoice.getDetails()) {
-            total += detail.getAmount() * detail.getProduct().getPrice();
+            Product product = detail.getProduct();
+            if (product == null || product.getPrice() <= 0) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Producto inválido o sin precio");
+            }
+            total += detail.getAmount() * product.getPrice();
         }
         return total;
     }
