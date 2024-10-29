@@ -68,7 +68,7 @@ public class InvoiceService {
             }
 
             if (detail.getAmount() > product.get().getStock()) {
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Cantidad mayor al stock disponible");
+                throw new ResponseStatusException(HttpStatus.CONFLICT, "Cantidad mayor al stock disponible");
             }
 
             detail.setProduct(product.get());
