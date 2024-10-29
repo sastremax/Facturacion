@@ -7,6 +7,6 @@ import lombok.Setter;
 @Setter
 public class TimeApiResponse {
 
-    private String currentDateTime;
+    private String date;
 
 }

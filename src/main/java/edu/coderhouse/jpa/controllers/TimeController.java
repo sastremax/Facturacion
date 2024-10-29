@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 @RestController
 @RequestMapping("/api/time")
@@ -18,14 +18,14 @@ public class TimeController {
     @Autowired
     private MainService mainService;
 
-    @Operation(summary = "Obtener la fecha y hora actual")
+    @Operation(summary = "Obtener la fecha actual")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Fecha y hora obtenidas exitosamente"),
-            @ApiResponse(responseCode = "500", description = "Error al obtener la fecha y hora")
+            @ApiResponse(responseCode = "200", description = "Fecha obtenida exitosamente"),
+            @ApiResponse(responseCode = "500", description = "Error al obtener la fecha")
     })
     @GetMapping("/now")
-    public LocalDateTime getCurrentTime() {
-        return mainService.getCurrentUtcTime();
+    public LocalDate getCurrentTime() {
+        return mainService.getCurrentUtcDate();
     }
 
 }

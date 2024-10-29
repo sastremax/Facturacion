@@ -9,16 +9,19 @@ import edu.coderhouse.jpa.exceptions.InsufficientStockException;
 import edu.coderhouse.jpa.repositories.InvoiceRepository;
 import edu.coderhouse.jpa.repositories.ClientRepository;
 import edu.coderhouse.jpa.repositories.ProductRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
 
+@Slf4j
 @Service
 public class InvoiceService {
 
@@ -32,15 +35,18 @@ public class InvoiceService {
     private ProductRepository productRepository;
 
     public Invoice createInvoice(Invoice invoice) throws InsufficientStockException {
-
+        log.debug("Validating invoice...");
         validateInvoice(invoice);
 
-        LocalDateTime currentDate = getCurrentDate();
+        log.debug("Fetching current date...");
+        LocalDate currentDate = getCurrentDate();
         invoice.setCreatedAt(currentDate);
 
+        log.debug("Calculating total for the invoice...");
         double total = calculateTotal(invoice);
         invoice.setTotal(total);
 
+        log.debug("Saving invoice to the database...");
         return invoiceRepository.save(invoice);
     }
 
@@ -74,15 +80,19 @@ public class InvoiceService {
         return total;
     }
 
-    private LocalDateTime getCurrentDate() {
+    public LocalDate getCurrentDate() {
         RestTemplate restTemplate = new RestTemplate();
         try {
-            String url = "http://worldclockapi.com/api/json/utc/now";
+            String url = "https://timeapi.io/api/Time/current/zone?timeZone=UTC";
             TimeApiResponse response = restTemplate.getForObject(url, TimeApiResponse.class);
-            return LocalDateTime.parse(response.getCurrentDateTime());
+            if (response != null && response.getDate() != null) {
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/dd/yyyy");
+                return LocalDate.parse(response.getDate(), formatter);
+            }
         } catch (Exception e) {
-            return LocalDateTime.now();
+            log.error("Error fetching current date from API, using system date instead: {}", e.getMessage());
         }
+        return LocalDate.now();
     }
 
     public List<Invoice> getAllInvoices() {

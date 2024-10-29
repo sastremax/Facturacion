@@ -14,6 +14,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -36,28 +37,68 @@ public class InvoiceController {
     })
     @PostMapping(consumes = "application/json")
     public ResponseEntity<?> createInvoice(@RequestBody Invoice invoice) {
-        try {
-            if (invoice.getClient() == null || invoice.getDetails() == null || invoice.getDetails().isEmpty()) {
+        if (invoice.getClient() == null) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(new ErrorResponseDto(String.valueOf(HttpStatus.BAD_REQUEST.value()),
+                            HttpStatus.BAD_REQUEST.getReasonPhrase(),
+                            "El cliente es obligatorio",
+                            "client"));
+        }
+
+        if (invoice.getDetails() == null || invoice.getDetails().isEmpty()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(new ErrorResponseDto(String.valueOf(HttpStatus.BAD_REQUEST.value()),
+                            HttpStatus.BAD_REQUEST.getReasonPhrase(),
+                            "Los detalles de la factura son obligatorios",
+                            "details"));
+        }
+
+        for (var detail : invoice.getDetails()) {
+            if (detail.getProduct() == null) {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                        .body(new ErrorResponseDto(String.valueOf(HttpStatus.BAD_REQUEST.value()), HttpStatus.BAD_REQUEST.getReasonPhrase(), "La solicitud es inválida. Asegúrate de incluir cliente y detalles.", "client, details"));
+                        .body(new ErrorResponseDto(String.valueOf(HttpStatus.BAD_REQUEST.value()),
+                                HttpStatus.BAD_REQUEST.getReasonPhrase(),
+                                "Cada detalle debe tener un producto asociado",
+                                "product"));
             }
+            if (detail.getAmount() <= 0) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                        .body(new ErrorResponseDto(String.valueOf(HttpStatus.BAD_REQUEST.value()),
+                                HttpStatus.BAD_REQUEST.getReasonPhrase(),
+                                "La cantidad del producto debe ser mayor a 0",
+                                "amount"));
+            }
+        }
+
+        try {
+            LocalDate currentDate = invoiceService.getCurrentDate();
+
+            invoice.setCreatedAt(currentDate);
+
             Invoice createdInvoice = invoiceService.createInvoice(invoice);
             return ResponseEntity.status(HttpStatus.CREATED).body(createdInvoice);
 
         } catch (InsufficientStockException e) {
             return ResponseEntity.status(HttpStatus.CONFLICT)
-                    .body(new ErrorResponseDto(String.valueOf(HttpStatus.CONFLICT.value()), HttpStatus.CONFLICT.getReasonPhrase(), e.getMessage(), "stock"));
+                    .body(new ErrorResponseDto(String.valueOf(HttpStatus.CONFLICT.value()),
+                            HttpStatus.CONFLICT.getReasonPhrase(),
+                            e.getMessage(),
+                            "stock"));
 
         } catch (NullPointerException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(new ErrorResponseDto(String.valueOf(HttpStatus.BAD_REQUEST.value()), HttpStatus.BAD_REQUEST.getReasonPhrase(),
-                            "Se produjo un error al procesar los datos de la factura. Verifica los campos requeridos.", "invoice"));
+                    .body(new ErrorResponseDto(String.valueOf(HttpStatus.BAD_REQUEST.value()),
+                            HttpStatus.BAD_REQUEST.getReasonPhrase(),
+                            "Se produjo un error al procesar los datos de la factura. Verifica los campos requeridos.",
+                            "invoice"));
 
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(new ErrorResponseDto(String.valueOf(HttpStatus.INTERNAL_SERVER_ERROR.value()), HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase(), "Error inesperado del servidor. Inténtalo más tarde.", "internal_error"));
+                    .body(new ErrorResponseDto(String.valueOf(HttpStatus.INTERNAL_SERVER_ERROR.value()),
+                            HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase(),
+                            "Error inesperado del servidor. Inténtalo más tarde.",
+                            "internal_error"));
         }
-
     }
 
     @Operation(summary = "Obtener todas las facturas")
