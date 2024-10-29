@@ -22,6 +22,7 @@ public class MainService {
             TimeApiResponse response = restTemplate.getForObject(url, TimeApiResponse.class);
             if (response != null && response.getDate() != null) {
                 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/dd/yyyy");
+                logger.info("Fecha obtenida desde la API: {}", response.getDate());
                 return LocalDate.parse(response.getDate(), formatter);
             } else {
                 logger.warn("ALa API retornó una respuesta nula. Usando la hora local.");

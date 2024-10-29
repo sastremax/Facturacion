@@ -34,12 +34,15 @@ public class InvoiceService {
     @Autowired
     private ProductRepository productRepository;
 
+    @Autowired
+    private MainService mainService;
+
     public Invoice createInvoice(Invoice invoice) throws InsufficientStockException {
         log.debug("Validating invoice...");
         validateInvoice(invoice);
 
         log.debug("Fetching current date...");
-        LocalDate currentDate = LocalDate.now();
+        LocalDate currentDate = mainService.getCurrentUtcDate();
         invoice.setCreatedAt(currentDate);
 
         log.debug("Calculating total for the invoice...");
@@ -86,20 +89,7 @@ public class InvoiceService {
         return total;
     }
 
-    public LocalDate getCurrentDate() {
-        /* RestTemplate restTemplate = new RestTemplate();
-        try {
-            String url = "https://timeapi.io/api/Time/current/zone?timeZone=UTC";
-            TimeApiResponse response = restTemplate.getForObject(url, TimeApiResponse.class);
-            if (response != null && response.getDate() != null) {
-                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/dd/yyyy");
-                return LocalDate.parse(response.getDate(), formatter);
-            }
-        } catch (Exception e) {
-            log.error("Error fetching current date from API, using system date instead: {}", e.getMessage());
-        }  */
-        return LocalDate.now();
-    }
+
 
     public List<Invoice> getAllInvoices() {
         return invoiceRepository.findAll();

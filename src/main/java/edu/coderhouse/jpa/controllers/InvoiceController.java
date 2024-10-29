@@ -4,6 +4,7 @@ import edu.coderhouse.jpa.dto.ErrorResponseDto;
 import edu.coderhouse.jpa.entities.Invoice;
 import edu.coderhouse.jpa.exceptions.InsufficientStockException;
 import edu.coderhouse.jpa.services.InvoiceService;
+import edu.coderhouse.jpa.services.MainService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -27,6 +28,9 @@ public class InvoiceController {
 
     @Autowired
     private InvoiceService invoiceService;
+
+    @Autowired
+    private MainService mainService;
 
     @Operation(summary = "Crear una nueva factura")
     @ApiResponses(value = {
@@ -82,7 +86,7 @@ public class InvoiceController {
         }
 
         try {
-            LocalDate currentDate = invoiceService.getCurrentDate();
+            LocalDate currentDate = mainService.getCurrentUtcDate();
 
             invoice.setCreatedAt(currentDate);
             log.info("Fecha de creación de la factura: {}", currentDate);
