@@ -39,7 +39,7 @@ public class InvoiceService {
         validateInvoice(invoice);
 
         log.debug("Fetching current date...");
-        LocalDate currentDate = getCurrentDate();
+        LocalDate currentDate = LocalDate.now();
         invoice.setCreatedAt(currentDate);
 
         log.debug("Calculating total for the invoice...");
@@ -81,7 +81,7 @@ public class InvoiceService {
     }
 
     public LocalDate getCurrentDate() {
-        RestTemplate restTemplate = new RestTemplate();
+        /* RestTemplate restTemplate = new RestTemplate();
         try {
             String url = "https://timeapi.io/api/Time/current/zone?timeZone=UTC";
             TimeApiResponse response = restTemplate.getForObject(url, TimeApiResponse.class);
@@ -91,7 +91,7 @@ public class InvoiceService {
             }
         } catch (Exception e) {
             log.error("Error fetching current date from API, using system date instead: {}", e.getMessage());
-        }
+        }  */
         return LocalDate.now();
     }
 

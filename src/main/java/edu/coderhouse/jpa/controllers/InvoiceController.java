@@ -9,6 +9,8 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,6 +22,8 @@ import java.util.List;
 @RestController
 @RequestMapping("api/invoices")
 public class InvoiceController {
+
+    private static final Logger log = LoggerFactory.getLogger(InvoiceController.class);
 
     @Autowired
     private InvoiceService invoiceService;
@@ -37,7 +41,10 @@ public class InvoiceController {
     })
     @PostMapping(consumes = "application/json")
     public ResponseEntity<?> createInvoice(@RequestBody Invoice invoice) {
+        log.info("Iniciando la creación de factura para el cliente con ID: {}", invoice.getClient() != null ? invoice.getClient().getId() : "Cliente no proporcionado");
+
         if (invoice.getClient() == null) {
+            log.error("Error: El cliente no fue proporcionado en la factura");
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body(new ErrorResponseDto(String.valueOf(HttpStatus.BAD_REQUEST.value()),
                             HttpStatus.BAD_REQUEST.getReasonPhrase(),
@@ -46,6 +53,7 @@ public class InvoiceController {
         }
 
         if (invoice.getDetails() == null || invoice.getDetails().isEmpty()) {
+            log.error("Error: Los detalles de la factura están vacíos o no fueron proporcionados");
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body(new ErrorResponseDto(String.valueOf(HttpStatus.BAD_REQUEST.value()),
                             HttpStatus.BAD_REQUEST.getReasonPhrase(),
@@ -55,6 +63,7 @@ public class InvoiceController {
 
         for (var detail : invoice.getDetails()) {
             if (detail.getProduct() == null) {
+                log.error("Error: No se proporcionó un producto en uno de los detalles de la factura");
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                         .body(new ErrorResponseDto(String.valueOf(HttpStatus.BAD_REQUEST.value()),
                                 HttpStatus.BAD_REQUEST.getReasonPhrase(),
@@ -62,23 +71,28 @@ public class InvoiceController {
                                 "product"));
             }
             if (detail.getAmount() <= 0) {
+                log.error("Error: La cantidad de uno de los productos es inválida: {}", detail.getAmount());
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                         .body(new ErrorResponseDto(String.valueOf(HttpStatus.BAD_REQUEST.value()),
                                 HttpStatus.BAD_REQUEST.getReasonPhrase(),
                                 "La cantidad del producto debe ser mayor a 0",
                                 "amount"));
             }
+            detail.setInvoice(invoice);
         }
 
         try {
             LocalDate currentDate = invoiceService.getCurrentDate();
 
             invoice.setCreatedAt(currentDate);
+            log.info("Fecha de creación de la factura: {}", currentDate);
 
             Invoice createdInvoice = invoiceService.createInvoice(invoice);
+            log.info("Factura creada exitosamente con ID: {}", createdInvoice.getId());
             return ResponseEntity.status(HttpStatus.CREATED).body(createdInvoice);
 
         } catch (InsufficientStockException e) {
+            log.error("Stock insuficiente para uno de los productos de la factura. Detalle: {}", e.getMessage());
             return ResponseEntity.status(HttpStatus.CONFLICT)
                     .body(new ErrorResponseDto(String.valueOf(HttpStatus.CONFLICT.value()),
                             HttpStatus.CONFLICT.getReasonPhrase(),
@@ -86,6 +100,7 @@ public class InvoiceController {
                             "stock"));
 
         } catch (NullPointerException e) {
+            log.error("Error de datos nulos en la factura: {}", e.getMessage());
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body(new ErrorResponseDto(String.valueOf(HttpStatus.BAD_REQUEST.value()),
                             HttpStatus.BAD_REQUEST.getReasonPhrase(),
@@ -93,6 +108,7 @@ public class InvoiceController {
                             "invoice"));
 
         } catch (Exception e) {
+            log.error("Error inesperado al crear la factura", e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(new ErrorResponseDto(String.valueOf(HttpStatus.INTERNAL_SERVER_ERROR.value()),
                             HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase(),
