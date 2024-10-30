@@ -93,7 +93,7 @@ public class InvoiceService {
         return total;
     }
 
-    private int calculateTotalProducts(Invoice invoice) {
+    public int calculateTotalProducts(Invoice invoice) {
         int totalProducts = 0;
         for (InvoiceDetail detail : invoice.getDetails()) {
             totalProducts += detail.getAmount();

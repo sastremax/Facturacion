@@ -18,7 +18,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("api/invoices")
@@ -108,8 +110,14 @@ public class InvoiceController {
             log.info("Fecha de creación de la factura: {}", currentDate);
 
             Invoice createdInvoice = invoiceService.createInvoice(invoice);
+            int totalProducts = invoiceService.calculateTotalProducts(createdInvoice);
+
+            Map<String, Object> response = new HashMap<>();
+            response.put("invoice", createdInvoice);
+            response.put("totalProducts", totalProducts);
+
             log.info("Factura creada exitosamente con ID: {}", createdInvoice.getId());
-            return ResponseEntity.status(HttpStatus.CREATED).body(createdInvoice);
+            return ResponseEntity.status(HttpStatus.CREATED).body(response);
 
         } catch (InsufficientStockException e) {
             log.error("Stock insuficiente para uno de los productos de la factura. Detalle: {}", e.getMessage());
