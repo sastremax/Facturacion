@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDate;
 import java.util.HashMap;
@@ -54,7 +55,6 @@ public class InvoiceController {
                     "  },\n" +
                     "  \"details\": [\n" +
                     "    {\n" +
-                    "      \"id\": \"9a26f035-6eb5-4bbd-af5e-d0d8d7854fda\",\n" +
                     "      \"product\": {\n" +
                     "        \"id\": \"0cccbc88-0793-42f0-b76f-ee7bdeedcedd\"\n" +
                     "      },\n" +
@@ -105,16 +105,18 @@ public class InvoiceController {
 
         try {
             LocalDate currentDate = mainService.getCurrentUtcDate();
-
             invoice.setCreatedAt(currentDate);
             log.info("Fecha de creación de la factura: {}", currentDate);
 
             Invoice createdInvoice = invoiceService.createInvoice(invoice);
+
+            double totalAmount = invoiceService.calculateTotal(createdInvoice);
             int totalProducts = invoiceService.calculateTotalProducts(createdInvoice);
 
             Map<String, Object> response = new HashMap<>();
             response.put("invoice", createdInvoice);
             response.put("totalProducts", totalProducts);
+            response.put("totalAmount", totalAmount);
 
             log.info("Factura creada exitosamente con ID: {}", createdInvoice.getId());
             return ResponseEntity.status(HttpStatus.CREATED).body(response);
@@ -127,13 +129,12 @@ public class InvoiceController {
                             e.getMessage(),
                             "stock"));
 
-        } catch (NullPointerException e) {
-            log.error("Error de datos nulos en la factura: {}", e.getMessage());
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(new ErrorResponseDto(String.valueOf(HttpStatus.BAD_REQUEST.value()),
-                            HttpStatus.BAD_REQUEST.getReasonPhrase(),
-                            "Se produjo un error al procesar los datos de la factura. Verifica los campos requeridos.",
-                            "invoice"));
+        } catch (ResponseStatusException e) {
+            log.error("Error en validaciones de la factura: {}", e.getReason());
+            return ResponseEntity.status(e.getStatusCode())
+                    .body(new ErrorResponseDto(String.valueOf(e.getStatusCode().value()),
+                            e.getReason(),
+                            e.getReason(), "validation_error"));
 
         } catch (Exception e) {
             log.error("Error inesperado al crear la factura", e);
@@ -183,18 +184,55 @@ public class InvoiceController {
     @Operation(summary = "Actualizar una factura")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Factura actualizada exitosamente"),
+            @ApiResponse(responseCode = "400", description = "Datos inválidos",
+                    content = { @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponseDto.class)) }),
             @ApiResponse(responseCode = "404", description = "Factura no encontrada",
                     content = { @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponseDto.class)) }),
-            @ApiResponse(responseCode = "400", description = "Datos inválidos")
+            @ApiResponse(responseCode = "409", description = "Conflicto en la actualización de la factura: Stock insuficiente",
+                    content = { @Content(mediaType = "application/json", schema = @Schema(example = "{\n" +
+                            "  \"statusCode\": \"409\",\n" +
+                            "  \"status\": \"Conflict\",\n" +
+                            "  \"message\": \"Cantidad mayor al stock disponible\",\n" +
+                            "  \"field\": \"stock\"\n" +
+                            "}")
+                    )}),
+            @ApiResponse(responseCode = "500", description = "Error interno del servidor",
+                    content = { @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponseDto.class)) })
     })
     @PutMapping("/{id}")
-    public ResponseEntity<?> updateInvoice(@PathVariable String id, @RequestBody Invoice invoiceDetails) {
+    public ResponseEntity<?> updateInvoice(
+            @PathVariable String id,
+            @RequestBody
+            @io.swagger.v3.oas.annotations.media.Schema(example = "{\n" +
+                    "  \"client\": {\n" +
+                    "    \"id\": \"123e4567-e89b-12d3-a456-426614174000\"\n" +
+                    "  },\n" +
+                    "  \"details\": [\n" +
+                    "    {\n" +
+                    "      \"product\": {\n" +
+                    "        \"id\": \"270a05aa-7c34-4f14-9d5d-f877974c98f4\"\n" +
+                    "      },\n" +
+                    "      \"amount\": 5,\n" +
+                    "      \"price\": 750.4\n" +
+                    "    }\n" +
+                    "  ]\n" +
+                    "}")
+            Invoice invoiceDetails) {
+
         Invoice updatedInvoice = invoiceService.updateInvoice(id, invoiceDetails);
         if (updatedInvoice == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
                     .body(new ErrorResponseDto(String.valueOf(HttpStatus.NOT_FOUND.value()), HttpStatus.NOT_FOUND.getReasonPhrase(), "Factura no encontrada", "id"));
         }
-        return ResponseEntity.ok(updatedInvoice);
+        double totalAmount = invoiceService.calculateTotal(updatedInvoice);
+        int totalProducts = invoiceService.calculateTotalProducts(updatedInvoice);
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("invoice", updatedInvoice);
+        response.put("totalProducts", totalProducts);
+        response.put("totalAmount", totalAmount);
+
+        return ResponseEntity.ok(response);
     }
 
     @Operation(summary = "Eliminar una factura")

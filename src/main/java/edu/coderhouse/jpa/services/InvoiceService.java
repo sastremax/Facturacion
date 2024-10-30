@@ -85,7 +85,7 @@ public class InvoiceService {
         }
     }
 
-    private double calculateTotal(Invoice invoice) {
+    public double calculateTotal(Invoice invoice) {
         double total = 0;
         for (InvoiceDetail detail : invoice.getDetails()) {
             total += detail.getAmount() * detail.getPrice();
@@ -113,9 +113,41 @@ public class InvoiceService {
         Optional<Invoice> invoiceOptional = invoiceRepository.findById(id);
         if (invoiceOptional.isPresent()) {
             Invoice invoice = invoiceOptional.get();
-            invoice.setDetails(invoiceDetails.getDetails());
+
             invoice.setClient(invoiceDetails.getClient());
-            invoice.setTotal(calculateTotal(invoice));
+
+            Optional<Client> clientOptional = clientRepository.findById(invoiceDetails.getClient().getId());
+            if (clientOptional.isEmpty()) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Cliente no existe");
+            }
+
+            Client client = clientOptional.get();
+            invoice.setClient(client);
+
+            invoice.getDetails().clear();
+
+            for (InvoiceDetail detail : invoiceDetails.getDetails()) {
+                Optional<Product> productOptional = productRepository.findById(detail.getProduct().getId());
+                if (productOptional.isEmpty()) {
+                    throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Producto no existe");
+                }
+
+                Product product = productOptional.get();
+                if (detail.getAmount() > product.getStock()) {
+                    throw new ResponseStatusException(HttpStatus.CONFLICT, "Cantidad mayor al stock disponible");
+                }
+
+                product.setStock(product.getStock() - detail.getAmount());
+                productRepository.save(product);
+
+                detail.setInvoice(invoice);
+
+                invoice.getDetails().add(detail);
+            }
+
+            double total = calculateTotal(invoice);
+            invoice.setTotal(total);
+
             return invoiceRepository.save(invoice);
         } else {
             return null;
