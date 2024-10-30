@@ -45,9 +45,17 @@ public class InvoiceService {
         LocalDate currentDate = mainService.getCurrentUtcDate();
         invoice.setCreatedAt(currentDate);
 
+        for (InvoiceDetail detail : invoice.getDetails()) {
+            detail.setPrice(detail.getProduct().getPrice());
+            detail.setInvoice(invoice);
+        }
+
         log.debug("Calculating total for the invoice...");
         double total = calculateTotal(invoice);
         invoice.setTotal(total);
+
+        log.debug("Calculating total number of products...");
+        int totalProducts = calculateTotalProducts(invoice);
 
         log.debug("Saving invoice to the database...");
         return invoiceRepository.save(invoice);
@@ -80,16 +88,18 @@ public class InvoiceService {
     private double calculateTotal(Invoice invoice) {
         double total = 0;
         for (InvoiceDetail detail : invoice.getDetails()) {
-            Product product = detail.getProduct();
-            if (product == null || product.getPrice() <= 0) {
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Producto inválido o sin precio");
-            }
-            total += detail.getAmount() * product.getPrice();
+            total += detail.getAmount() * detail.getPrice();
         }
         return total;
     }
 
-
+    private int calculateTotalProducts(Invoice invoice) {
+        int totalProducts = 0;
+        for (InvoiceDetail detail : invoice.getDetails()) {
+            totalProducts += detail.getAmount();
+        }
+        return totalProducts;
+    }
 
     public List<Invoice> getAllInvoices() {
         return invoiceRepository.findAll();
