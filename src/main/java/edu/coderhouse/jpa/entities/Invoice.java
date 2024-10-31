@@ -8,7 +8,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,7 +35,7 @@ public class Invoice {
 
     @Column(name = "created_at", nullable = false, updatable = false)
     @Schema(description = "Date when the invoice was created", accessMode = Schema.AccessMode.READ_ONLY, example = "2023-08-08")
-    private LocalDate createdAt;
+    private LocalDateTime createdAt;
 
     @Column(name = "total", nullable = false)
     @Schema(description = "Total amount of the invoice", accessMode = Schema.AccessMode.READ_ONLY, example = "158754.10")

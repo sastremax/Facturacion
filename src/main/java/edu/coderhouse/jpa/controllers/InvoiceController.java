@@ -18,7 +18,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -104,9 +104,9 @@ public class InvoiceController {
         }
 
         try {
-            LocalDate currentDate = mainService.getCurrentUtcDate();
-            invoice.setCreatedAt(currentDate);
-            log.info("Fecha de creación de la factura: {}", currentDate);
+            LocalDateTime currentDateTime = mainService.getCurrentArgentinaDateTime();
+            invoice.setCreatedAt(currentDateTime);
+            log.info("Fecha de creación de la factura: {}", currentDateTime);
 
             Invoice createdInvoice = invoiceService.createInvoice(invoice);
 

@@ -1,6 +1,5 @@
 package edu.coderhouse.jpa.services;
 
-import edu.coderhouse.jpa.dto.TimeApiResponse;
 import edu.coderhouse.jpa.entities.Client;
 import edu.coderhouse.jpa.entities.Invoice;
 import edu.coderhouse.jpa.entities.InvoiceDetail;
@@ -13,11 +12,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
+import java.time.LocalDateTime;
+
 import java.util.List;
 import java.util.Optional;
 
@@ -42,8 +40,8 @@ public class InvoiceService {
         validateInvoice(invoice);
 
         log.debug("Fetching current date...");
-        LocalDate currentDate = mainService.getCurrentUtcDate();
-        invoice.setCreatedAt(currentDate);
+        LocalDateTime currentDateTime = mainService.getCurrentArgentinaDateTime();
+        invoice.setCreatedAt(currentDateTime);
 
         for (InvoiceDetail detail : invoice.getDetails()) {
             detail.setPrice(detail.getProduct().getPrice());
