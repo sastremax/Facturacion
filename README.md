@@ -238,4 +238,28 @@ Configuraciones (Configuration)
 • Configuran Swagger para documentar automáticamente los endpoints y permiten probar la API sin herramientas adicionales.
 • Incluyen otras opciones de personalización que adaptan la aplicación a distintos entornos, facilitando ajustes rápidos según el entorno de desarrollo o producción.
 
+Uso de RestTemplate en Spring Boot
+
+RestTemplate es una herramienta de Spring que facilita realizar solicitudes HTTP para consumir APIs REST desde una aplicación Spring Boot. Es útil para enviar y recibir datos en formatos como JSON o XML, y permite integrar nuestra aplicación con servicios externos.
+Principales Operaciones de RestTemplate
+
+1.	GET - Obtener Recursos:
+RestTemplate permite hacer solicitudes GET para obtener recursos de un servidor externo y mapear la respuesta directamente a una clase de Java especificada. Este método se usa para traer datos de una API y convertirlos en objetos Java.
+
+2.	POST - Crear Recursos:
+Para enviar datos a una API y crear un recurso, se usa el método POST. RestTemplate permite enviar un objeto como parte de la solicitud, y la API puede responder con el recurso recién creado.
+
+3.	PUT - Actualizar Recursos:
+El método PUT se utiliza para actualizar un recurso existente en el servidor sin esperar una respuesta en el cuerpo. Se envía un objeto que reemplaza o modifica el recurso identificado en el servidor.
+
+4.	DELETE - Eliminar Recursos:
+DELETE permite eliminar un recurso en el servidor. RestTemplate puede enviar esta solicitud sin necesidad de enviar datos en el cuerpo de la misma.
+
+Manejo de Errores
+RestTemplate permite manejar errores HTTP a través de excepciones específicas, como HttpClientErrorException para errores del cliente y HttpServerErrorException para errores del servidor. Es importante manejar estas excepciones para que la aplicación se recupere adecuadamente o proporcione mensajes informativos cuando ocurren errores al consumir servicios externos.
+
+Configuración
+RestTemplate puede ser instanciado directamente o definido como un @Bean en la configuración de Spring. Esto último permite inyectarlo en múltiples clases y facilita su reuso en varias partes de la aplicación.
+Con RestTemplate, Spring Boot permite trabajar fácilmente con APIs REST, lo que facilita que nuestra aplicación obtenga y procese datos de servicios externos.
+
 Maximiliano Sastre.
