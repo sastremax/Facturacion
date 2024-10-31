@@ -1,9 +1,9 @@
-FACTURACION
+# FACTURACION
 
-#1 Descripción del Proyecto
+# 1 Descripción del Proyecto
 Este proyecto es una aplicación Java que permite administrar las ventas de un comercio. Facilita la gestión de clientes, productos y facturas, además de ofrecer manejo automático de stock e integración con un servicio REST externo para obtener la fecha de las facturas.
 
-#2 Requisitos del Sistema
+# 2 Requisitos del Sistema
 • Java: 17.0.12
 • IDE: Puedes utilizar IntelliJ IDEA Community (gratuito) como entorno de desarrollo
 • MySQL: 5.5.5
@@ -11,7 +11,7 @@ Este proyecto es una aplicación Java que permite administrar las ventas de un c
 • Swagger: Para la documentación y pruebas de la API
 • Postman: Para pruebas de endpoints y validación de funcionalidades
 
-#3 Instalación y Configuración Desde Cero
+# 3 Instalación y Configuración Desde Cero
 1. Instalar IntelliJ IDEA
 Descarga e instala IntelliJ IDEA desde la página oficial de JetBrains. Abre IntelliJ y crea un nuevo proyecto desde cero o importando el archivo descargado en el siguiente paso.
 
@@ -60,10 +60,16 @@ spring.jpa.show-sql=true
 6. Ejecutar la Aplicación
 En IntelliJ, selecciona el archivo principal de la aplicación y ejecútalo. La aplicación estará disponible en http://localhost:8080.
 
-#4 Uso de la API
+# 4 Uso de la API
+La API REST de este sistema permite gestionar de manera eficiente los recursos relacionados con la facturación, incluyendo clientes, productos, facturas, y un servicio de fecha y hora.
 
-#5 Gestión de Clientes
+Clientes: Para crear, consultar, actualizar y eliminar clientes.
+Productos: Para crear, consultar, actualizar y eliminar productos.
+Facturas: Para gestionar las facturas, incluyendo la creación de nuevas facturas, la consulta de facturas existentes, la actualización de datos y su eliminación.
+Fecha y Hora: A través de un endpoint específico, se obtiene la fecha y hora actual en el formato local de Argentina. Este servicio consume la API externa de Time API para garantizar que las fechas de las facturas sean precisas y reflejen la hora real en el momento de su generación.
+Cada endpoint responde con códigos HTTP adecuados para indicar el estado de la solicitud (por ejemplo, 200 para éxito, 400 para errores en la solicitud, 404 si no se encuentra el recurso, etc.).
 
+# 5 Gestión de Clientes
 Crear Cliente
 Endpoint: /api/clientes
 Método: POST
@@ -137,7 +143,7 @@ Ejemplo de Error
 "path": "/api/clientes/1"
 }
 
-#6 Gestión de Productos
+# 6 Gestión de Productos
 Crear Producto
 Endpoint: /api/productos
 Método: POST
@@ -200,7 +206,7 @@ Ejemplo de Error
 "path": "/api/productos/1"
 }
 
-#6 Gestión de facturas:
+# 7 Gestión de facturas:
 En esta sección se explica cómo gestionar las facturas, incluyendo la creación, obtención, actualización y eliminación de facturas. Cada solicitud está diseñada para garantizar la precisión de los datos y la disponibilidad del stock antes de completar las operaciones.
 
 Crear Factura
@@ -280,7 +286,7 @@ Ejemplo de Error:
 "path": "/api/facturas/1"
 }
 
-#8 Manejo de Excepciones y Códigos de Error
+# 8 Manejo de Excepciones y Códigos de Error
 El sistema maneja diferentes tipos de errores para proporcionar respuestas claras y consistentes. Los errores se gestionan con códigos HTTP y mensajes detallados. Aquí están los posibles códigos de error:
 
 • 400 Bad Request: Cuando los datos enviados son inválidos o incompletos. Este error es común para datos de entrada incorrectos en los métodos POST y PUT.
@@ -296,10 +302,10 @@ Configuración
 RestTemplate puede ser instanciado directamente o definido como un @Bean en la configuración de Spring. Esto último permite inyectarlo en múltiples clases y facilita su reuso en varias partes de la aplicación.
 Con RestTemplate, Spring Boot permite trabajar fácilmente con APIs REST, lo que facilita que nuestra aplicación obtenga y procese datos de servicios externos.
 
-#9 Servicio REST para Fecha de la factura
+# 9 Servicio REST para Fecha de la factura
 El sistema obtiene la fecha del comprobante utilizando el servicio Time API. La dirección http://timeapi.io/api/Time/current/zone?timeZone=America/Argentina/Buenos_Aires se configura en un archivo de configuración (en MainService) para permitir obtener la fecha en el formato local de Argentina y se llama desde el servicio de comprobantes cuando se necesita generar la fecha para una nueva factura.
 
-#10 Pruebas con Postman
+# 10 Pruebas con Postman
 Para probar los endpoints de la API, sigue estos pasos:
 
 Crear una Nueva Colección
@@ -327,7 +333,7 @@ Envía cada solicitud desde Postman y observa la respuesta. Comprueba que los c�
 Guardar la Colección para Futuras Pruebas
 Una vez configurada, guarda la colección en Postman. Esto permite reutilizarla para futuras pruebas o modificaciones de la API.
 
-#11 Uso de Swagger
+# 11 Uso de Swagger
 Para ver la documentación de la API y probar los endpoints, accede a http://localhost:8080/swagger-ui.html. Swagger ofrece una interfaz interactiva donde puedes ver y probar cada endpoint de la API. Swagger documenta automáticamente todos los endpoints de la aplicación y permite probar solicitudes directamente en el navegador sin necesidad de herramientas adicionales. Esto es útil para validar rápidamente los diferentes métodos y verificar las respuestas que genera el sistema, incluyendo ejemplos de datos de prueba, parámetros de entrada y respuestas de error.
 
 #12 Explicación Detallada de Facturas
@@ -360,7 +366,7 @@ Configuraciones (Configuration)
 
 Aclaracion: Los precios de los productos en las facturas se mantienen en el tiempo, incluso si el precio del producto cambia posteriormente.
 
-#13 Uso de RestTemplate en Spring Boot
+# 13 Uso de RestTemplate en Spring Boot
 
 RestTemplate es una herramienta de Spring que facilita realizar solicitudes HTTP para consumir APIs REST desde una aplicación Spring Boot. Es útil para enviar y recibir datos en formatos como JSON o XML, y permite integrar nuestra aplicación con servicios externos.
 Principales Operaciones de RestTemplate
