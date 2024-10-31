@@ -66,7 +66,10 @@ La API REST de este sistema permite gestionar de manera eficiente los recursos r
 Clientes: Para crear, consultar, actualizar y eliminar clientes.
 Productos: Para crear, consultar, actualizar y eliminar productos.
 Facturas: Para gestionar las facturas, incluyendo la creación de nuevas facturas, la consulta de facturas existentes, la actualización de datos y su eliminación.
-Fecha y Hora: A través de un endpoint específico, se obtiene la fecha y hora actual en el formato local de Argentina. Este servicio consume la API externa de Time API para garantizar que las fechas de las facturas sean precisas y reflejen la hora real en el momento de su generación.
+Fecha y Hora: A través de un endpoint específico, se obtiene la fecha y hora actual en el formato local de Argentina. Este servicio consume la API externa de Time API para garantizar que las fechas de las facturas sean precisas y reflejen la hora real en el momento de su generación. El endpoint es /api/time/now y se hace mediante un metodo GET:
+{
+"dateTime": "2024-10-27T10:22:53"
+}
 Cada endpoint responde con códigos HTTP adecuados para indicar el estado de la solicitud (por ejemplo, 200 para éxito, 400 para errores en la solicitud, 404 si no se encuentra el recurso, etc.).
 
 # 5 Gestión de Clientes
