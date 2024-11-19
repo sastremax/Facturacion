@@ -1,6 +1,7 @@
 package edu.coderhouse.jpa.services;
 
 import edu.coderhouse.jpa.entities.Client;
+import edu.coderhouse.jpa.exceptions.DuplicateDocNumberException;
 import edu.coderhouse.jpa.repositories.ClientRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -16,6 +17,11 @@ public class ClientService {
     private ClientRepository clientRepository;
 
     public Client createClient(Client client) {
+        if (clientRepository.existsByDocNumber(client.getDocNumber())) {
+            throw new DuplicateDocNumberException(
+                    "Ya existe un cliente con el número de documento: " + client.getDocNumber()
+            );
+        }
         return clientRepository.save(client);
     }
 

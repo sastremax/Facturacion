@@ -11,6 +11,8 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+
+@Schema(description = "Objeto que representa un error estándar en la API")
 public class ErrorResponseDto {
 
     @NotBlank
@@ -18,7 +20,7 @@ public class ErrorResponseDto {
     private String statusCode;
 
     @NotBlank
-    @Schema(description = "Estado de la respuesta", example = "Not Found")
+    @Schema(description = "Estado de la respuesta", example = "No Encontrado")
     private String status;
 
     @NotBlank

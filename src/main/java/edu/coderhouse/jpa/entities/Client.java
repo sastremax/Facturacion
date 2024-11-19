@@ -30,10 +30,10 @@ public class Client {
     private String name;
 
     @Column(name = "LASTNAME", nullable = false)
-    @Schema(description = "Last name of the client", requiredMode = Schema.RequiredMode.REQUIRED, example = "Sastre")
+    @Schema(description = "Last Name of the client", requiredMode = Schema.RequiredMode.REQUIRED, example = "Sastre")
     private String lastName;
 
-    @Column(name = "DOCNUMBER", nullable = false)
+    @Column(name = "DOCNUMBER", nullable = false, unique = true)
     @Schema(description = "Document number of the client", requiredMode = Schema.RequiredMode.REQUIRED, example = "25145269")
     private String docNumber;
 
